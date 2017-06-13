@@ -31,7 +31,7 @@ function(data) {
     var current = this.root;
 //while loop that runs until current returns a value of null
     while(current) {
-//iffy statement that checks to see if the new node value being passed through is greater than the current value
+//iffy statement that checks to see if the new node value being passed through is less than the current value
       if(node.data < current.data) {
 //further iffy statment checking to see if there's a node present at the current's left parameter. If there isn't anything there then node being passed through becomes the new current.left and the loop is broken
         if(!current.left) {
@@ -55,14 +55,18 @@ function(data) {
   }
 }
 
+//method for finding the minimum value in a BinarySearchTree
 BinarySearchTree.prototype.getMin = function(node) {
+//if no node value is being passed through then node becomes the root of the tree
   if(!node) {
     node = this.root;
   }
+//while loop checking to see if node.left has a value. Node reassigns itself to the
+//left value until it equals null to find the smallest value
   while(node.left) {
     node = node.left;
-    console.log(node);
   }
+//returns the data of the node with the smallest value
   return node.data;
 }
 
@@ -71,33 +75,56 @@ BinarySearchTree.prototype.getMin = function(node) {
 BinarySearchTree.prototype.remove = function(data) {
 //assigns variable to the searchtree being using 'this'
   var that = this;
-  console.log(node);
+//variable taking in the root node and data being passed through
+//if no node is present return null
   var removeNode = function(node, data) {
     if(!node) {
       return null;
     }
+//if data being passed through is equal to the node date being passed through
+//then continue
     if(data === node.data) {
+//if there is no left or right node for the node being passed through after
+//the data is found to equal the node data then return null erasing the node
       if(!node.left && !node.right) {
         return null;
       }
+//if there is no left node then return the right node to override the current node
     if(!node.left) {
       return node.right;
       }
+//if there is no right node then return the left node to override the current node
     if(!node.right){
       return node.left;
       }
-    var temp = that.getMin(node.right);
+//below accounts for a node with both a left and a right node
+//assigns a temp variable that pulls the root from the searchtree using the "that" variable
+//calls the getMin method which passes through the node.right value and finds the smallest
+//data value from that side of the tree
+
+    var temp = that.getMin(node.right)
+//in the example of 4 get min will return the node.right value of 4 since there are no values
+//below it in teh tree
+    console.log('temp', temp);
+    console.log('node.right', node.right);
+//reassigns the node.data value to the min value temp returns. in the example 4 becomes the new
+//data value
     node.data = temp;
+//reassigns the .right value to whatever remove node returns. in the example of 4 it will return null
+//so the full node returned will be 4 with the left connection of 2 maintained
     node.right = removeNode(node.right, temp);
     return node;
+//if the data being passed through isn't equal but less than then traverse to the left side of the tree
     } else if(data < node.data) {
     node.left = removeNode(node.left, data);
     return node;
     } else {
+  //if the data being passed through isn't equal but greater than then traverse to the right side of the tree
     node.right = removeNode(node.right, data);
     return node;
     }
   };
+  //creates the new root by passing through the root node and data
   this.root = removeNode(this.root, data);
 };
 
@@ -126,15 +153,18 @@ BinarySearchTree.prototype.print = function() {
 
 
 var binarySearchTree = new BinarySearchTree();
-binarySearchTree.add(5);
-binarySearchTree.add(3);
-binarySearchTree.add(7);
-binarySearchTree.add(2);
-binarySearchTree.add(4);
-// binarySearchTree.add(4);
 binarySearchTree.add(6);
+binarySearchTree.add(5);
+binarySearchTree.add(7);
+binarySearchTree.add(3);
+binarySearchTree.add(8);
+// binarySearchTree.add(4);
+binarySearchTree.add(4);
+binarySearchTree.add(2)
 // binarySearchTree.add(8);
 // binarySearchTree.print();
-// binarySearchTree.remove(5);
 // binarySearchTree.print();
-console.log(binarySearchTree.getMin());
+console.log(binarySearchTree.root.left.left);
+binarySearchTree.remove(3);
+// binarySearchTree.print();
+console.log(binarySearchTree.root.left.left);
